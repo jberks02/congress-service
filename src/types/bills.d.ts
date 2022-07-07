@@ -7,6 +7,21 @@
 
 type byPartySingle = Record<string, number>;
 
+interface versionItem {
+    status: string;
+    title: string;
+    url: string;
+    congressdotgov_url: string;
+}
+
+interface actionItem {
+    id: number;
+    chamber: string;
+    action_type: string;
+    datetime: string;
+    description: string;
+}
+
 interface bill {
     bill_id: string;
     bill_type: string;
@@ -42,6 +57,14 @@ interface bill {
     last_vote?: string;
     cosponsors_by_party?: byPartySingle;
     congress?: string;
+    bill?: string;
+    sponsor?: string | null;
+    withdrawn_cosponsors?: number;
+    house_passage_vote?: string | null;
+    senate_passage_vote?: string | null;
+    versions?: versionItem[];
+    actions?: actionItem[];
+    votes?: unknown[];
 }
 
 interface billList {
@@ -113,5 +136,53 @@ declare namespace billsBySubject {
         num_results: number;
         offset: number;
         subject: string;
+        results: bill[]
+    }
+}
+
+// Get Upcoming Bills
+// route: https://api.propublica.org/congress/v1/bills/upcoming/{chamber}.json
+// Parameter	Description
+// chamber	    house or senate
+
+declare namespace upcomingBills {
+    interface result {
+        status: string;
+        copyright: string;
+        results: {
+            date: string;
+            bills: {
+                congress: string;
+                chamber: string;
+                bill_id: string;
+                bill_slug: string;
+                bill_type: string;
+                bill_number: string;
+                api_uri: string;
+                legislative_day: string;
+                scheduled_at: string;
+                range: string;
+                context: string;
+                description: string;
+                bill_url: string;
+                consideration: string;
+                source_type: string;
+                url: string;
+            }
+        }[]
+    }
+}
+
+// Get a Specific Bill
+// route: https://api.propublica.org/congress/v1/{congress}/bills/{bill-id}.json
+// Parameter	Description
+// congress	    105-117
+// bill-id  	a bill slug, for example hr4881 - these can be found in the recent bill response.
+
+declare namespace singleBillResponse {
+    interface result {
+        status: string;
+        copyright: string;
+        results: bill[]
     }
 }
