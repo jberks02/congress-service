@@ -313,3 +313,34 @@ declare namespace subjectSearch {
 }
 
 // Get Cosponsors for a Specific Bill
+// route: https://api.propublica.org/congress/v1/{congress}/bills/{bill-id}/cosponsors.json
+// Parameter	Description
+// congress	    105-117
+// bill-id	    a bill slug, for example hr4881 - these can be found in the recent bill response.
+
+declare namespace billCosponsors {
+
+    interface cosponsors extends billBasic {
+        cosponsors_by_party: {
+            party: {
+                id: string;
+                cosponsors: string;
+            }
+        }[];
+        cosponsors: {
+            cosponsor_id: string;
+            name: string;
+            cosponsor_title: string;
+            cosponsor_state: string;
+            cosponsor_party: string;
+            cosponsor_uri: string;
+            date: string;
+        }[]
+    }
+
+    interface result {
+        status: string;
+        copyright: string;
+        results: 
+    }
+}
