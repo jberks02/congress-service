@@ -7,6 +7,27 @@
 
 type byPartySingle = Record<string, number>;
 
+interface subjectBasic {
+    name: string;
+    url_name: string;
+}
+
+interface amendmentItem {
+    amendment_number: string;
+    slug: string;
+    sponsor_title: string;
+    sponsor: string;
+    sponsor_id: string;
+    sponsor_uri: string;
+    sponsor_party: string;
+    sponsor_state: string;
+    introduced_date: string;
+    title: string;
+    congressdotgov_url: string;
+    latest_major_action_date: string;
+    latest_major_action: string;
+}
+
 interface versionItem {
     status: string;
     title: string;
@@ -20,6 +41,30 @@ interface actionItem {
     action_type: string;
     datetime: string;
     description: string;
+}
+
+interface billBasic {
+    congress: string;
+    bill_id: string;
+    bill_slug: string;
+    bill_type: string;
+    number: string;
+    bill_uri: string;
+    url_number: string;
+    title: string;
+    sponsor_title: string;
+    sponsor_id: string;
+    sponsor_name: string;
+    sponsor_state: string;
+    sponsor_party: string;
+    sponsor_uri: string;
+    introduced_date: string;
+    number_of_cosponsors: number;
+    committees: string;
+    latest_major_action_date: string;
+    latest_major_action: string;
+    house_passage_vote: string;
+    senate_passage_vote: string;
 }
 
 interface bill {
@@ -186,3 +231,85 @@ declare namespace singleBillResponse {
         results: bill[]
     }
 }
+
+// Get Amendments for a Specific Bill
+// route: https://api.propublica.org/congress/v1/{congress}/bills/{bill-id}/amendments.json
+// Parameter	Description
+// congress	    105-117
+// bill-id	    a bill slug, for example hr4881 - these can be found in bill responses.
+
+declare namespace billAmendments {
+    interface result {
+        status: string;
+        copyright: string;
+        results: {
+            congress: string;
+            bill_id: string;
+            num_results: number;
+            offset: number;
+            amendments: amendmentItem[]
+        }[]
+    }
+}
+
+// Get Subjects for a Specific Bill
+// route: https://api.propublica.org/congress/v1/{congress}/bills/{bill-id}/subjects.json
+// Parameter	Description
+// congress	    105-117
+// bill-id	    a bill slug, for example hr4881 - these can be found in bill responses.
+
+declare namespace billSubjects {
+
+    interface billWithSubjects extends billBasic {
+        subjects: subjectBasic[]
+    }
+
+    interface result {
+        status: string;
+        copyright: string;
+        num_results: number;
+        offset: number;
+        results: billWithSubjects[]
+    }
+}
+
+// Get Related Bills for a Specific Bill
+// route: https://api.propublica.org/congress/v1/{congress}/bills/{bill-id}/related.json
+// Parameter	Description
+// congress	    105-117
+// bill-id	    a bill slug, for example hr4881 - these can be found in bill responses.
+
+declare namespace relatedBillsByBill {
+
+    interface related extends billBasic {
+        related_bills: billBasic[]
+    }
+
+    interface result {
+        status: string;
+        copyright: string;
+        num_results: number;
+        offset: number;
+        results: related[]
+    }
+}
+
+// Get a Specific Bill Subject
+// route: https://api.propublica.org/congress/v1/bills/subjects/search.json
+// Parameter	Description
+// query	    a word or phrase to search
+
+declare namespace subjectSearch {
+    interface result {
+        status: string;
+        copyright: string;
+        results: {
+            query: string;
+            num_results: number;
+            offset: number;
+            subjects: subjectBasic[]
+        }[]
+    }
+}
+
+// Get Cosponsors for a Specific Bill
