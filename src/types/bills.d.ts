@@ -341,6 +341,6 @@ declare namespace billCosponsors {
     interface result {
         status: string;
         copyright: string;
-        results: 
+        results: cosponsors[]
     }
 }

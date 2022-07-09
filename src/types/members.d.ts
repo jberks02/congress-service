@@ -1,5 +1,8 @@
-// endpoint: GET https://api.propublica.org/congress/v1/{congress}/{chamber}/members.json
-// get complete list of members by congress and chamber
+//Lists of Members 
+// route: GET https://api.propublica.org/congress/v1/{congress}/{chamber}/members.json
+// Parameter	Description
+// congress	    102-117 for House, 80-117 for Senate
+// chamber  	house or senate
 
 declare namespace members {
 
