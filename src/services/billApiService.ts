@@ -1,44 +1,23 @@
-import { chamber, updateType } from "../types/request";
-import fetch, { RequestInit, Response } from 'node-fetch';
-const { propublica_key } = process.env;
+import { Response } from 'node-fetch';
+import { chamber, updateType } from '../types/request';
+import { propublica_request } from '../utils/fetch_url.js';
 
-// interface Header {
-//     METHOD: 'GET', 
-//     'X-API-Key': string;
-// }
+export async function mostRecentBills(congress: number, chamber: chamber, type: updateType): Promise<billMostRecentlyUpdated.result['results']> {
 
-export default class BillApi {
-    private pass: string;
-    private header: RequestInit;
-    private urlBase: string;
-    constructor() {
-        this.pass = propublica_key;
-        this.urlBase = 'https://api.propublica.org';
-        this.header ={ method: 'GET', 'headers': { 'X-API-Key': this.pass } }
-    }
-    async mostRecentBills(congress: number, chamber: chamber, type: updateType): Promise<billMostRecentlyUpdated.result['results']> {
+    const recent_bills_fetch: Response = await propublica_request(`/congress/v1/${congress}/${chamber}/bills/${type}.json`);
 
-        const url = new URL(`/congress/v1/${congress}/${chamber}/bills/${type}.json`, this.urlBase);
+    const bills = await recent_bills_fetch.json() as billMostRecentlyUpdated.result;
 
-        const req: Response = await fetch(url.href, this.header);
+    return bills.results;
 
-        if(!req.ok) throw new Error(await req.text());
+}
 
-        const mostRecent = await req.json() as billMostRecentlyUpdated.result;
+export async function mostRecentBillsByMember(member: string, type: updateType): Promise<billRecentlyActionedByMember.result['results']> {
 
-        return mostRecent.results;
-    }
-    async mostRecentBillsByMember(member: string, type: updateType) {
+    const member_bill_fetch: Response = await propublica_request(`/congress/v1/members/${member}/bills/${type}.json`);
 
-        const url = new URL(`/congress/v1/members/${member}/bills/${type}.json`, this.urlBase);
+    const member_bill = await member_bill_fetch.json() as billRecentlyActionedByMember.result;
 
-        const req: Response = await fetch(url.href, this.header);
+    return member_bill.results;
 
-        if(!req.ok) throw new Error(await req.text());
-
-        const result = await req.json() as billRecentlyActionedByMember.result;
-
-        return result.results;
-
-    }
 }
