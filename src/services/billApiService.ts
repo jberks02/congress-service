@@ -12,12 +12,12 @@ export async function mostRecentBills(congress: number, chamber: chamber, type: 
 
 }
 
-export async function mostRecentBillsByMember(member: string, type: updateType): Promise<billRecentlyActionedByMember.result['results']> {
+export async function mostRecentBillsByMember(member: string, type: updateType): Promise<bill[]> {
 
     const member_bill_fetch: Response = await propublica_request(`/congress/v1/members/${member}/bills/${type}.json`);
 
     const member_bill = await member_bill_fetch.json() as billRecentlyActionedByMember.result;
 
-    return member_bill.results;
+    return member_bill.results[0].bills;
 
 }
